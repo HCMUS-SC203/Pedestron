@@ -154,7 +154,7 @@ def run_detector_on_dataset():
         used_gt_ignore = set()
         used_edge_id = set()
         edge_list.sort(key=lambda x: x[2], reverse=True)
-        for i in len(edge_list):
+        for i in range(len(edge_list)):
             edge = edge_list[i]
             u, v, IoU = edge
             if u in used_detection or v in used_gt or IoU < threshold_IoU:
