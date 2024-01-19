@@ -89,6 +89,9 @@ def get_detector_bboxes(model, image_path, score_thr=0.3):
     for bbox_with_score in bboxes_with_scores:
         if bbox_with_score[4] > score_thr:
             bboxes.append(bbox_with_score[:4])
+    for i in range(len(bboxes)):
+        bboxes[i][2] -= bboxes[i][0]
+        bboxes[i][3] -= bboxes[i][1]
     return bboxes
 
 def show_vis_ratio_list(gt_path):
