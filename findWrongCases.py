@@ -62,9 +62,6 @@ def get_gt_bboxes(gt_path, image_name):
 def draw_gt_bboxes(gt_path, image_name, image_path, output_dir):
     gt_boxes = get_gt_bboxes(gt_path, image_name)
     image = cv2.imread(image_path)
-    if (image.empty()):
-        print("image is empty")
-        return
     for gt_box in gt_boxes:
         x, y, w, h = gt_box
         cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 255, 0), 2)
