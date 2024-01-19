@@ -1,18 +1,18 @@
-# import argparse
+import argparse
 
-# import os
-# import os.path as osp
-# import sys
-# sys.path.insert(0, osp.join(osp.dirname(osp.abspath(__file__)), '../'))
-# import time
-# import cv2
-# import torch
-# import glob
+import os
+import os.path as osp
+import sys
+sys.path.insert(0, osp.join(osp.dirname(osp.abspath(__file__)), '../'))
+import time
+import cv2
+import torch
+import glob
 import json
-# import mmcv
-# import numpy as np
+import mmcv
+import numpy as np
 
-# from mmdet.apis import inference_detector, init_detector, show_result
+from mmdet.apis import inference_detector, init_detector, show_result
 
 
 def parse_args():
