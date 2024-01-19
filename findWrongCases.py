@@ -94,7 +94,7 @@ def run_detector_on_dataset():
     #     detections = mock_detector(model, im, output_dir)
     #     prog_bar.update()
     print(get_gt_bboxes("datasets/CityPersons/val_gt.json", "frankfurt_000000_000576_leftImg8bit.png"))
-    print(get_detector_bboxes(model, "datasets/CityPersons/leftImg8bit/val/frankfurt/frankfurt_000000_000576_leftImg8bit.png", output_dir))
+    print(get_detector_bboxes(model, "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt/frankfurt_000000_000576_leftImg8bit.png", output_dir))
 
 if __name__ == '__main__':
     run_detector_on_dataset()
