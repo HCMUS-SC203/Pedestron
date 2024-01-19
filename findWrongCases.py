@@ -133,7 +133,7 @@ def run_detector_on_dataset():
     model = init_detector(
         args.config, args.checkpoint, device=torch.device('cuda:0'))
 
-    prog_bar = mmcv.ProgressBar(len(eval_imgs))
+    # prog_bar = mmcv.ProgressBar(len(eval_imgs))
     cnt = 0
     for im in eval_imgs:
         cnt += 1
@@ -247,7 +247,7 @@ def run_detector_on_dataset():
                 f.close()
         else:
             print("Correct case!")
-        prog_bar.update()
+        # prog_bar.update()
 
 if __name__ == '__main__':
     run_detector_on_dataset()
