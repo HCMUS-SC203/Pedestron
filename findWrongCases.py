@@ -62,13 +62,14 @@ def get_gt_bboxes(gt_path, image_name):
 def draw_gt_bboxes(gt_path, image_name, image_path, output_dir):
     gt_boxes = get_gt_bboxes(gt_path, image_name)
     image = cv2.imread(image_path)
-    for box in gt_boxes:
-        x, y, w, h = box
+    if (image.empty()):
+        print("image is empty")
+        return
+    for gt_box in gt_boxes:
+        x, y, w, h = gt_box
         cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 255, 0), 2)
-    basename = os.path.basename(image_name).split('.')[0]
-    result_name = basename + "_gt.jpg"
-    result_name = os.path.join(output_dir, result_name)
-    cv2.imwrite(result_name, image)
+    create_base_dir(output_dir)
+    cv2.imwrite(os.path.join(output_dir, image_name), image)
 
 def get_detector_bboxes(model, image_name, output_dir):
     image = cv2.imread(image_name)
