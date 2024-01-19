@@ -119,4 +119,4 @@ if __name__ == '__main__':
     img_path = "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt/frankfurt_000000_000576_leftImg8bit.png"
     img_name = "frankfurt_000000_000576_leftImg8bit.png"
     gt_path = "datasets/CityPersons/val_gt.json"
-    draw_gt_bboxes(gt_path, img_name, img_path, "datasets/CityPersons/val_gt_vis")
+    draw_gt_bboxes(gt_path, img_name, img_path, "test")
