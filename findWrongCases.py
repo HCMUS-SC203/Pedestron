@@ -65,7 +65,7 @@ def draw_gt_bboxes(gt_path, image_name, image_path, output_dir):
     for gt_box in gt_boxes:
         x, y, w, h = gt_box
         cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 255, 0), 2)
-    if os.path.exists(output_dir):
+    if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     cv2.imwrite(os.path.join(output_dir, image_name), image)
 
