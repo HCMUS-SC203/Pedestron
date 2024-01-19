@@ -118,7 +118,7 @@ def run_detector_on_dataset():
 
 if __name__ == '__main__':
     # run_detector_on_dataset()
-    img_path = "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt_000000_001016_leftImg8bit.png"
-    img_name = "frankfurt_000000_001016_leftImg8bit.png"
+    img_path = "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt_000000_001236_leftImg8bit.png"
+    img_name = "frankfurt_000000_001236_leftImg8bit.png"
     gt_path = "datasets/CityPersons/val_gt.json"
     draw_gt_bboxes(gt_path, img_name, img_path, "test/")
