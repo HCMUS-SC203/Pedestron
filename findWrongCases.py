@@ -54,8 +54,9 @@ def get_gt_bboxes(gt_path, image_name):
                 if gt_data["annotations"][l]["image_id"] != image_id:
                     return []
                 while l < anno_size and gt_data["annotations"][l]["image_id"] == image_id:
-                    if gt_data["annotations"][l]["ignore"] == 0:
-                        gt_boxes.append(gt_data["annotations"][l]["bbox"])
+                    # if gt_data["annotations"][l]["ignore"] == 0:
+                    #     gt_boxes.append(gt_data["annotations"][l]["bbox"])
+                    gt_boxes.append(gt_data["annotations"][l]["bbox"])
                     l += 1
                 break
     return gt_boxes
