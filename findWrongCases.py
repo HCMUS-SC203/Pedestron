@@ -216,7 +216,11 @@ def run_detector_on_dataset():
                 os.makedirs(output_dir)
             cv2.imwrite(os.path.join(output_dir, os.path.basename(im)), image)
             # Output log file
-            with open(os.path.join(output_dir, os.path.basename(im) + ".log"), "w") as f:
+            ## Create log folder
+            if not os.path.exists(os.path.join(output_dir, "log")):
+                os.makedirs(os.path.join(output_dir, "log"))
+            ## Output log file
+            with open(os.path.join(output_dir, "log", os.path.basename(im).split('.')[0]+".txt"), "w") as f:
                 f.write(f"Detected: {len(detection_bbox)}\n")
                 for i in range(len(detection_bbox)):
                     x, y, w, h = detection_bbox[i]
