@@ -32,7 +32,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def get_gt_boxes(gt_path, image_name):
+def get_gt_bboxes(gt_path, image_name):
     gt_boxes = []
     with open(gt_path) as f:
         gt_data = json.load(f)
@@ -59,7 +59,7 @@ def get_gt_boxes(gt_path, image_name):
                 break
     return gt_boxes
 
-def run_detector(model, image_name, output_dir):
+def get_detector_bboxes(model, image_name, output_dir):
     image = cv2.imread(image_name)
     results = inference_detector(model, image)
     if isinstance(results, tuple):
@@ -67,7 +67,7 @@ def run_detector(model, image_name, output_dir):
     else:
         bbox_result = results
     bboxes = np.vstack(bbox_result)
-    print(bboxes)
+    return bboxes
 
 def create_base_dir(dest):
     basedir = os.path.dirname(dest)
@@ -88,11 +88,12 @@ def run_detector_on_dataset():
     model = init_detector(
         args.config, args.checkpoint, device=torch.device('cuda:0'))
 
-    prog_bar = mmcv.ProgressBar(len(eval_imgs))
-    for im in eval_imgs:
-        detections = mock_detector(model, im, output_dir)
-        prog_bar.update()
+    # prog_bar = mmcv.ProgressBar(len(eval_imgs))
+    # for im in eval_imgs:
+    #     detections = mock_detector(model, im, output_dir)
+    #     prog_bar.update()
+    print(get_gt_bboxes("datasets/CityPersons/val_gt.json", "frankfurt_000000_000576_leftImg8bit.png"))
+    print(get_detector_bboxes(model, "datasets/CityPersons/leftImg8bit/val/frankfurt/frankfurt_000000_000576_leftImg8bit.png", output_dir))
 
 if __name__ == '__main__':
-    #run_detector_on_dataset()
-    print(get_gt_boxes("datasets/CityPersons/val_gt.json", "frankfurt_000000_000576_leftImg8bit.png"))
+    run_detector_on_dataset()
