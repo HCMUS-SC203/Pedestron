@@ -59,8 +59,9 @@ def get_gt_bboxes(gt_path, image_name):
                 break
     return gt_boxes
 
-def draw_gt_bboxes(image_name, gt_boxes, output_dir):
-    image = cv2.imread(image_name)
+def draw_gt_bboxes(gt_path, image_name, image_path, output_dir):
+    gt_boxes = get_gt_bboxes(gt_path, image_name)
+    image = cv2.imread(image_path)
     for box in gt_boxes:
         x, y, w, h = box
         cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 255, 0), 2)
@@ -118,4 +119,6 @@ def run_detector_on_dataset():
 if __name__ == '__main__':
     # run_detector_on_dataset()
     img_path = "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt/frankfurt_000000_000576_leftImg8bit.png"
-    draw_gt_bboxes(img_path, get_gt_bboxes("datasets/CityPersons/val_gt.json", "frankfurt_000000_000576_leftImg8bit.png"), "ldn")
+    img_name = "frankfurt_000000_000576_leftImg8bit.png"
+    gt_path = "datasets/CityPersons/val_gt.json"
+    draw_gt_bboxes(gt_path, img_name, img_path, "datasets/CityPersons/val_gt_vis")
