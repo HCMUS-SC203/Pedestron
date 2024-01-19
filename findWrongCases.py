@@ -65,7 +65,8 @@ def draw_gt_bboxes(gt_path, image_name, image_path, output_dir):
     for gt_box in gt_boxes:
         x, y, w, h = gt_box
         cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 255, 0), 2)
-    create_base_dir(output_dir)
+    if os.path.exists(output_dir):
+        os.makedirs(output_dir)
     cv2.imwrite(os.path.join(output_dir, image_name), image)
 
 def get_detector_bboxes(model, image_name, output_dir):
@@ -119,4 +120,4 @@ if __name__ == '__main__':
     img_path = "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt/frankfurt_000000_000576_leftImg8bit.png"
     img_name = "frankfurt_000000_000576_leftImg8bit.png"
     gt_path = "datasets/CityPersons/val_gt.json"
-    draw_gt_bboxes(gt_path, img_name, img_path, "test")
+    draw_gt_bboxes(gt_path, img_name, img_path, "test/")
