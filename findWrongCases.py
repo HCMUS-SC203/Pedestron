@@ -1,17 +1,18 @@
-# import argparse
+import argparse
 
-# import os
-# import os.path as osp
-# import sys
-# sys.path.insert(0, osp.join(osp.dirname(osp.abspath(__file__)), '../'))
-# import time
-# import cv2
-# import torch
-# import glob
+import os
+import os.path as osp
+import sys
+sys.path.insert(0, osp.join(osp.dirname(osp.abspath(__file__)), '../'))
+import time
+import cv2
+import torch
+import glob
 import json
-# import mmcv
+import mmcv
+import numpy as np
 
-# from mmdet.apis import inference_detector, init_detector, show_result
+from mmdet.apis import inference_detector, init_detector, show_result
 
 
 def parse_args():
@@ -58,13 +59,15 @@ def get_gt_boxes(gt_path, image_name):
                 break
     return gt_boxes
 
-def mock_detector(model, image_name, output_dir):
+def run_detector(model, image_name, output_dir):
     image = cv2.imread(image_name)
     results = inference_detector(model, image)
-    basename = os.path.basename(image_name).split('.')[0]
-    result_name = basename + "_result.jpg"
-    result_name = os.path.join(output_dir, result_name)
-    show_result(image, results, model.CLASSES, out_file=result_name)
+    if isinstance(results, tuple):
+        bbox_result = results[0]
+    else:
+        bbox_result = results
+    bboxes = np.vstack(bbox_result)
+    print(bboxes)
 
 def create_base_dir(dest):
     basedir = os.path.dirname(dest)
