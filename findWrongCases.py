@@ -1,18 +1,18 @@
-import argparse
+# import argparse
 
-import os
-import os.path as osp
-import sys
-sys.path.insert(0, osp.join(osp.dirname(osp.abspath(__file__)), '../'))
-import time
-import cv2
-import torch
-import glob
+# import os
+# import os.path as osp
+# import sys
+# sys.path.insert(0, osp.join(osp.dirname(osp.abspath(__file__)), '../'))
+# import time
+# import cv2
+# import torch
+# import glob
 import json
-import mmcv
-import numpy as np
+# import mmcv
+# import numpy as np
 
-from mmdet.apis import inference_detector, init_detector, show_result
+# from mmdet.apis import inference_detector, init_detector, show_result
 
 
 def parse_args():
@@ -59,6 +59,16 @@ def get_gt_bboxes(gt_path, image_name):
                 break
     return gt_boxes
 
+def draw_gt_bboxes(image_name, gt_boxes, output_dir):
+    image = cv2.imread(image_name)
+    for box in gt_boxes:
+        x, y, w, h = box
+        cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 255, 0), 2)
+    basename = os.path.basename(image_name).split('.')[0]
+    result_name = basename + "_gt.jpg"
+    result_name = os.path.join(output_dir, result_name)
+    cv2.imwrite(result_name, image)
+
 def get_detector_bboxes(model, image_name, output_dir):
     image = cv2.imread(image_name)
     print(type(image))
@@ -69,6 +79,15 @@ def get_detector_bboxes(model, image_name, output_dir):
         bbox_result = results
     bboxes = np.vstack(bbox_result)
     return bboxes
+
+def show_vis_ratio_list(gt_path):
+    gt_data = json.load(open(gt_path))
+    vis_ratio_list = set()
+    for anno in gt_data["annotations"]:
+        vis_ratio_list.add(anno["vis_ratio"])
+    vis_ratio_list = list(vis_ratio_list)
+    vis_ratio_list.sort()
+    print(vis_ratio_list)
 
 def create_base_dir(dest):
     basedir = os.path.dirname(dest)
@@ -97,4 +116,6 @@ def run_detector_on_dataset():
     print(get_detector_bboxes(model, "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt/frankfurt_000000_000576_leftImg8bit.png", output_dir))
 
 if __name__ == '__main__':
-    run_detector_on_dataset()
+    # run_detector_on_dataset()
+    img_path = "datasets/CityPersons/leftImg8bit_trainvaltest/leftImg8bit/val_all_in_folder/frankfurt/frankfurt_000000_000576_leftImg8bit.png"
+    draw_gt_bboxes(img_path, get_gt_bboxes("datasets/CityPersons/val_gt.json", "frankfurt_000000_000576_leftImg8bit.png"), "ldn")
