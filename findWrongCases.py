@@ -32,7 +32,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def get_gt_bboxes(gt_path, image_name):
+def get_gt_bboxes(gt_path, image_name, is_ignore=False):
     gt_boxes = []
     with open(gt_path) as f:
         gt_data = json.load(f)
@@ -54,19 +54,23 @@ def get_gt_bboxes(gt_path, image_name):
                 if gt_data["annotations"][l]["image_id"] != image_id:
                     return []
                 while l < anno_size and gt_data["annotations"][l]["image_id"] == image_id:
-                    # if gt_data["annotations"][l]["ignore"] == 0:
-                    #     gt_boxes.append(gt_data["annotations"][l]["bbox"])
-                    gt_boxes.append(gt_data["annotations"][l]["bbox"])
+                    if gt_data["annotations"][l]["ignore"] == is_ignore:
+                        gt_boxes.append(gt_data["annotations"][l]["bbox"])
+                    # gt_boxes.append(gt_data["annotations"][l]["bbox"])
                     l += 1
                 break
     return gt_boxes
 
 def draw_gt_bboxes(gt_path, image_name, image_path, output_dir):
     gt_boxes = get_gt_bboxes(gt_path, image_name)
+    gt_ignore_boxes = get_gt_bboxes(gt_path, image_name, True)
     image = cv2.imread(image_path)
     for gt_box in gt_boxes:
         x, y, w, h = gt_box
         cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 255, 0), 1)
+    for gt_ignore_box in gt_ignore_boxes:
+        x, y, w, h = gt_ignore_box
+        cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), (0, 0, 255), 1)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     cv2.imwrite(os.path.join(output_dir, image_name), image)
