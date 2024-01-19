@@ -233,8 +233,8 @@ def run_detector_on_dataset():
                     f.write(f"{u} {v} {IoU}\n")
                 f.write("\n")
                 f.write(f"True positive: {len(used_edge_id)}\n")
-                for i in range(len(used_edge_id)):
-                    u, v, IoU = edge_list[used_edge_id[i]]
+                for i in used_edge_id:
+                    u, v, IoU = edge_list[i]
                     f.write(f"{detection_bbox[u]} {gt_bboxes[v]} {IoU}\n")
                 f.write(f"False positive: {len(detection_bbox) - len(used_detection)}\n")
                 for i in range(len(detection_bbox)):
