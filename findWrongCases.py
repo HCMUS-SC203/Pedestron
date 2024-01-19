@@ -61,6 +61,7 @@ def get_gt_bboxes(gt_path, image_name):
 
 def get_detector_bboxes(model, image_name, output_dir):
     image = cv2.imread(image_name)
+    print(type(image))
     results = inference_detector(model, image)
     if isinstance(results, tuple):
         bbox_result = results[0]
