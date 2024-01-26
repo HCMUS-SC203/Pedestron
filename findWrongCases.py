@@ -11,6 +11,9 @@ import glob
 import json
 import mmcv
 import numpy as np
+import torch
+import clip
+from PIL import Image
 
 from mmdet.apis import inference_detector, init_detector, show_result
 
@@ -23,6 +26,8 @@ def parse_args():
     parser.add_argument('output_dir', type=str, help='the dir for result images')
     parser.add_argument('gt_path', type=str, help='gt path')
     parser.add_argument('threshold_IoU', type=float, help='threshold of IoU')
+    parser.add_argument('clip_model', type=str, help='clip model name')
+    parser.add_argument('filter_threshold', type=float, help='threshold of clip model')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
@@ -78,7 +83,6 @@ def draw_gt_bboxes(gt_path, image_name, image_path, output_dir):
 
 def get_detector_bboxes(model, image_path, score_thr=0.3):
     image = cv2.imread(image_path)
-    print(type(image))
     results = inference_detector(model, image)
     if isinstance(results, tuple):
         bbox_result = results[0]
@@ -93,6 +97,30 @@ def get_detector_bboxes(model, image_path, score_thr=0.3):
         bboxes[i][2] -= bboxes[i][0]
         bboxes[i][3] -= bboxes[i][1]
     return bboxes
+
+def filter_gt_bboxes(model_name, image_path, bboxes, threshold=0.5):
+    if (model_name == "None"):
+        return bboxes
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model, preprocess = clip.load(model_name, device=device)
+
+    filtered_bboxes = []
+
+    for bbox in bboxes:
+        x, y, w, h = bbox
+        image = preprocess(Image.open(image_path).crop((x, y, x+w, y+h))).unsqueeze(0).to(device)
+        text = clip.tokenize(["sitting", "walking"]).to(device)
+
+        with torch.no_grad():
+            image_features = model.encode_image(image)
+            text_features = model.encode_text(text)
+            
+            logits_per_image, logits_per_text = model(image, text)
+            probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+
+        if probs[0][0] > threshold:
+            filtered_bboxes.append(bbox)
+    return filtered_bboxes
 
 def show_vis_ratio_list(gt_path):
     gt_data = json.load(open(gt_path))
@@ -125,6 +153,8 @@ def run_detector_on_dataset():
     output_dir = args.output_dir
     gt_path = args.gt_path
     threshold_IoU = args.threshold_IoU
+    clip_model = args.clip_model
+    filter_threshold = args.filter_threshold
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     print(input_dir)
@@ -140,6 +170,7 @@ def run_detector_on_dataset():
         print("------------------")
         print(f"Processing ({cnt}/{len(eval_imgs)}) {im} :")
         detection_bbox = get_detector_bboxes(model, im)
+        detection_bbox = filter_gt_bboxes(clip_model, im, detection_bbox, filter_threshold)
         gt_bboxes = get_gt_bboxes(gt_path, os.path.basename(im), False)
         gt_ignore_boxes = get_gt_bboxes(gt_path, os.path.basename(im), True)
         print(f"Detected: {len(detection_bbox)}")
