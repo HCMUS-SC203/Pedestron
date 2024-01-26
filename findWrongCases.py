@@ -11,7 +11,6 @@ import glob
 import json
 import mmcv
 import numpy as np
-import torch
 import clip
 from PIL import Image
 
